@@ -71,7 +71,7 @@ function displaySearchHistory() {
 // This function uses part of the OpenWeatherAPI to grab the longitude and latitude coordinates that we need to have for the getWeatherData function.
 function getLocationCoords(city) {
   var apiUrl =
-    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    "https://api.openweathermap.org/geo/1.0/direct?q=" +
     city +
     "&limit=5&appid=" +
     apiKey;
