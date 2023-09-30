@@ -1,3 +1,5 @@
+// Setting our apiKey and other variables
+
 var apiKey = "83959524a30156f2092bdf19a81286b7";
 var citySearchForm = document.getElementById("city-search-form");
 var cityInput = document.getElementById("city-input");
@@ -5,9 +7,10 @@ var currentWeatherSection = document.getElementById("current-weather");
 var forecastSection = document.getElementById("forecast");
 var searchHistorySection = document.getElementById("search-history");
 
+// Our search button handler, what happens when we click "search"
 citySearchForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  var city = cityInput.value.trim();
+  var city = cityInput.value.trim().toLowerCase();
   if (city) {
     getLocationCoords(city);
     saveSearch(city);
@@ -16,6 +19,9 @@ citySearchForm.addEventListener("submit", (event) => {
   }
 });
 
+
+// Saving our search history to localStorage. We use findIndex to make sure we are not duplicating a search, and if it is a duplicate we
+// use splice to remove it. We then make sure that each entry will be capitalized, and push it to the array and keep it at a maximum of 10 items.
 function saveSearch(city) {
   var searchHistory = localStorage.getItem("searchHistory");
 
@@ -29,15 +35,20 @@ function saveSearch(city) {
     searchHistory.splice(existingSearchIndex, 1);
   }
 
-  searchHistory.push(city);
+  var firstLetter = city.charAt(0);
+  var firstLetterCap = firstLetter.toUpperCase();
+  var remainingLetters = city.slice(1);
+  var capitalizeWord = firstLetterCap + remainingLetters;
+  searchHistory.push(capitalizeWord);
 
-  if (searchHistory.length > 6) {
+  if (searchHistory.length > 10) {
     searchHistory.shift();
   }
 
   localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
 }
 
+// Function to handle displaying the item history. We are using Bulma to create a nice interactive menu
 function displaySearchHistory() {
   var searchHistory = localStorage.getItem("searchHistory");
 
@@ -57,6 +68,7 @@ function displaySearchHistory() {
   });
 }
 
+// This function uses part of the OpenWeatherAPI to grab the longitude and latitude coordinates that we need to have for the getWeatherData function.
 function getLocationCoords(city) {
   var apiUrl =
     "http://api.openweathermap.org/geo/1.0/direct?q=" +
@@ -77,6 +89,7 @@ function getLocationCoords(city) {
   });
 }
 
+// Using OpenWeatherAPI to get the forecast data of whatever city the user entered
 function getWeatherData(lat, lon) {
   var apiUrl =
     "https://api.openweathermap.org/data/2.5/forecast?units=imperial&lat=" +
@@ -107,7 +120,7 @@ function getWeatherData(lat, lon) {
   });
 }
 
-// Function to display current weather conditions
+// Function to display current weather conditions. We grab all the data that we need, and then this is mostly just organizing html elements and styling them.
 function displayCurrentWeather(data) {
   var currentTemperature = data.list[0].main.temp;
   var windSpeed = data.list[0].wind.speed;
@@ -127,12 +140,14 @@ function displayCurrentWeather(data) {
   icon.setAttribute("src", iconUrl);
 
   currentWeatherSection.appendChild(icon);
-  document.querySelector("#city").textContent = cityName + " Current Weather:";
+  document.querySelector("#city").textContent = cityName + " Current Weather";
   currentWeatherSection.appendChild(temp);
   currentWeatherSection.appendChild(wind);
   currentWeatherSection.appendChild(humidity);
 }
 
+// Almost the exact same function as above, but instead we are grabbing the data for 5 days at once. We use the "new Date" function to make sure we are only getting
+// the forecast for each new day, as well as display that date to the user. 
 function displayForecast(data) {
   data.forEach(function (forecastData) {
     var forecastDate = new Date(forecastData.dt_txt);
@@ -171,5 +186,5 @@ function displayForecast(data) {
   })
 }
 
-// Initial setup or any other necessary logic
+// Displaying the search history after everything has loaded
 displaySearchHistory();
