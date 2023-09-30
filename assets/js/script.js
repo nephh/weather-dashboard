@@ -12,6 +12,7 @@ citySearchForm.addEventListener("submit", (event) => {
     getLocationCoords(city);
     saveSearch(city);
     displaySearchHistory();
+    cityInput.value = "";
   }
 });
 
