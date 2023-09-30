@@ -132,7 +132,7 @@ function displayCurrentWeather(data) {
   var wind = document.createElement("p");
   var humidity = document.createElement("p");
   var icon = document.createElement("img");
-  var iconUrl = "http://openweathermap.org/img/w/" + iconId + ".png";
+  var iconUrl = "https://openweathermap.org/img/w/" + iconId + ".png";
 
   temp.textContent = "Current Temperature: " + currentTemperature + "°F";
   wind.textContent = "Wind Speed: " + windSpeed + "MPH";
